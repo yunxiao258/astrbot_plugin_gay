@@ -1,0 +1,17 @@
+{
+  "keep_days": {
+    "description": "检测结果记录保留天数，过期自动清理，非法值回退默认 7",
+    "type": "int",
+    "default": 7
+  },
+  "max_daily_records": {
+    "description": "每日检测记录最大条数，超出自动清理最旧记录，非法值回退默认 1000",
+    "type": "int",
+    "default": 1000
+  },
+  "streak_titles_enabled": {
+    "description": "是否启用连续检测称号（连续第 N 天累计，3 天起有称号）",
+    "type": "bool",
+    "default": true
+  }
+}
