@@ -193,6 +193,17 @@ class TestLeaderboard(unittest.TestCase):
         self.assertIn("本群人", text)
         self.assertNotIn("外群人", text)
 
+    def test_private_chat_no_leak(self):
+        # 私聊（无群号）查榜单不泄漏其他群数据
+        p, _ = make_plugin()
+        daily = p._data["daily"].setdefault(today(), {})
+        daily["123|a"] = {"percent": 88, "name": "群友甲"}
+        ev = FakeEvent("/gay榜", group_id="", umo="aiocqhttp:FriendMessage:100")
+        r = run(p.cmd_leaderboard(ev))
+        text = chain_text(r)
+        self.assertNotIn("群友甲", text)
+        self.assertIn("群聊中发送", text)
+
 
 class TestCpCommand(unittest.TestCase):
     def test_cp_by_names(self):

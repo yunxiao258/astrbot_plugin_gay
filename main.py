@@ -370,14 +370,16 @@ class GayPlugin(Star):
     # ==================== 排行榜 ====================
 
     def leaderboard_text(self, event: AstrMessageEvent) -> str:
-        """渲染本群今日 Gay 王榜 Top10"""
+        """渲染本群今日 Gay 王榜 Top10；私聊（无群号）提示到群内使用"""
         today = datetime.now().strftime("%Y-%m-%d")
-        gid = ""
-        try:
-            gid = str(event.get_group_id() or "").strip()
-        except Exception:
-            pass
-        prefix = f"{gid}|" if gid else ""
+        gid = self._group_id(event)
+        if not gid:
+            return (
+                "🏆 今日 Gay 王榜\n"
+                "━━━━━━━━━━━━━━━━━━━━━━\n"
+                "ℹ️ 榜单按群独立统计，请在群聊中发送 /gay榜 查看"
+            )
+        prefix = f"{gid}|"
         rows = []
         for k, rec in self._data["daily"].get(today, {}).items():
             if prefix and not k.startswith(prefix):
