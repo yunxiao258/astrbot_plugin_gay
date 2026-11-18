@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """astrbot_plugin_gay 纯函数单元测试（不依赖 AstrBot 运行时）。"""
 
+import os
 import sys
 import unittest
 
-sys.path.insert(0, r"D:\astrbot\data\plugins")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from astrbot_plugin_gay.main import (  # noqa: E402
     GAY_LEVELS,
@@ -136,3 +137,7 @@ class TestKnowledge(unittest.TestCase):
     def test_all_nonempty(self):
         for k in KNOWLEDGE:
             self.assertTrue(k.strip())
+
+
+if __name__ == "__main__":
+    unittest.main()

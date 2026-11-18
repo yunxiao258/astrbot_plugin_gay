@@ -12,7 +12,7 @@ import unittest
 from datetime import datetime, timedelta
 from unittest import mock
 
-sys.path.insert(0, r"D:\astrbot\data\plugins")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from astrbot.api.message_components import At  # noqa: E402
 from astrbot_plugin_gay.main import GayPlugin  # noqa: E402

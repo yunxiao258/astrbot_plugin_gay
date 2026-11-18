@@ -28,7 +28,7 @@ from astrbot.api.star import Context, Star, register
 PLUGIN_NAME = "astrbot_plugin_gay"
 PLUGIN_AUTHOR = "云晓"
 PLUGIN_DESC = "GAY 浓度检测：浓度检测/Gay王榜/CP配对/科普（娱乐向）"
-PLUGIN_VERSION = "1.0.0"
+PLUGIN_VERSION = "1.0.1"
 
 # ==================== 内容库 ====================
 
