@@ -2,6 +2,6 @@ name: astrbot_plugin_gay
 display_name: GAY 浓度检测
 desc: 娱乐向群聊整活：浓度检测/Gay王榜/CP配对/友善科普，每人每日结果固定
 help: 发送「/gay @对方」或「/gay 名字」检测浓度（每人每日一次固定）；「/gay榜」查看本群今日 Gay 王榜 Top10；「/cp @A @B」CP 配对（契合度+情侣名）；「/gay 科普」随机友善小知识；「/gay 帮助」查看帮助
-version: 1.0.1
+version: 1.1.0
 author: 云晓
 repo: https://github.com/yunxiao258/astrbot_plugin_gay

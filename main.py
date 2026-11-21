@@ -28,7 +28,12 @@ from astrbot.api.star import Context, Star, register
 PLUGIN_NAME = "astrbot_plugin_gay"
 PLUGIN_AUTHOR = "云晓"
 PLUGIN_DESC = "GAY 浓度检测：浓度检测/Gay王榜/CP配对/科普（娱乐向）"
-PLUGIN_VERSION = "1.0.1"
+try:
+    from .hub_bridge import HUB_PROTOCOL_VERSION, emit_hub_event
+except ImportError:
+    from hub_bridge import HUB_PROTOCOL_VERSION, emit_hub_event
+
+PLUGIN_VERSION = "1.1.0"
 
 # ==================== 内容库 ====================
 
@@ -114,6 +119,7 @@ _CP_RE = re.compile(r"^[\\/／]?\s*cp\s+(.*)$", re.IGNORECASE | re.S)
 
 @register(PLUGIN_NAME, PLUGIN_AUTHOR, PLUGIN_DESC, PLUGIN_VERSION)
 class GayPlugin(Star):
+    HUB_PROTOCOL_VERSION = HUB_PROTOCOL_VERSION
     """GAY 浓度检测：每人每日一次固定，含 Gay 王榜 / CP 配对 / 连续称号 / 科普"""
 
     def __init__(self, context: Context, config: AstrBotConfig = None, data_dir: str = None):
@@ -439,6 +445,7 @@ class GayPlugin(Star):
                 else:
                     return self._send_text(event, "❌ 用法: /gay @对方 或 /gay 名字")
             record = self._get_result(event, target_key, target_name)
+            emit_hub_event(PLUGIN_NAME, "gay.tested", {"user_id": str(event.get_sender_id() or ""), "nickname": self._sender_name(event), "group_id": self._group_id(event), "percent": record.get("percent", 0)}, self.context)
             return self._send_text(event, self.format_detect(record))
         except Exception as e:
             logger.error(f"【{PLUGIN_NAME}】浓度检测失败: {e}")
@@ -523,3 +530,21 @@ class GayPlugin(Star):
             self._save()
         except Exception:
             pass
+
+    def hub_status(self) -> dict:
+        today = datetime.now().strftime("%Y-%m-%d")
+        cnt = len(self._data.get("daily", {}).get(today, {}) or {})
+        return {
+            "version": PLUGIN_VERSION,
+            "status": "online",
+            "metrics": {"今日检测": cnt, "累计天数": len(self._data.get("daily", {}))},
+            "actions": ["get_ranking"],
+        }
+
+    async def hub_action(self, action: str, params: dict | None = None) -> dict:
+        if action == "get_ranking":
+            today = datetime.now().strftime("%Y-%m-%d")
+            recs = list((self._data.get("daily", {}).get(today, {}) or {}).values())
+            recs.sort(key=lambda x: -int(x.get("percent", 0)))
+            return {"ok": True, "data": {"date": today, "top": [{"name": r.get("name", ""), "percent": r.get("percent", 0)} for r in recs[:10]]}}
+        return {"ok": False, "error": f"不支持的动作：{action}"}
